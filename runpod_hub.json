@@ -1,21 +1,18 @@
 {
   "title": "EchoMimic V2",
-  "description": "Audio-driven talking head video generation using EchoMimic V2. Takes audio + portrait image, outputs animated video.",
+  "description": "Audio-driven talking head video generation. Input audio + portrait image, output animated talking video.",
   "type": "serverless",
   "category": "video",
-  "iconUrl": "https://raw.githubusercontent.com/kmmr12/echomimic_v2/main/docs/icon.png",
+  "iconUrl": "https://raw.githubusercontent.com/kmmr12/echomimic_v2/main/assets/icon.png",
   "config": {
-    "runOn": "GPU",
-    "containerDiskInGB": 40,
-    "gpuTypeId": "NVIDIA A40",
+    "runsOn": "GPU",
+    "containerDiskInGb": 40,
     "presets": [
       {
         "name": "default",
-        "minWorkers": 0,
-        "maxWorkers": 3,
-        "idleTimeout": 5,
-        "gpuCount": 1
+        "defaults": {}
       }
-    ]
+    ],
+    "env": []
   }
 }
