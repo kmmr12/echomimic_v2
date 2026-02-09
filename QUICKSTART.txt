@@ -1,0 +1,96 @@
+═══════════════════════════════════════════════════════════════════════
+  ECHOMIMIC V2 RUNPOD DEPLOYMENT - QUICK START
+═══════════════════════════════════════════════════════════════════════
+
+📁 All deployment files are ready in: /opt/echomimic_v2_deploy/
+
+✅ Files created:
+   - Dockerfile (container definition)
+   - handler.py (RunPod serverless function)
+   - requirements.txt (Python dependencies)
+   - runpod_hub.json (RunPod Hub config)
+   - runpod_tests.json (test definitions)
+   - DEPLOYMENT_GUIDE.md (full instructions)
+
+═══════════════════════════════════════════════════════════════════════
+  FASTEST PATH TO DEPLOYMENT
+═══════════════════════════════════════════════════════════════════════
+
+STEP 1: Install Docker (if not already installed)
+  $ curl -fsSL https://get.docker.com -o get-docker.sh
+  $ sh get-docker.sh
+
+STEP 2: Login to Docker Hub
+  $ docker login
+  # Enter your Docker Hub credentials
+
+STEP 3: Build the Docker image
+  $ cd /opt/echomimic_v2_deploy
+  $ docker build -t YOUR_DOCKERHUB_USERNAME/echomimic-v2:latest .
+  # This will take 10-15 minutes
+
+STEP 4: Push to Docker Hub
+  $ docker push YOUR_DOCKERHUB_USERNAME/echomimic-v2:latest
+
+STEP 5: Deploy to RunPod
+  A. Go to: https://www.runpod.io/console/serverless
+  B. Click New Endpoint
+  C. Fill in:
+     - Name: echomimic-v2
+     - Container Image: YOUR_DOCKERHUB_USERNAME/echomimic-v2:latest
+     - Container Disk: 40 GB
+     - GPU: NVIDIA A40
+     - Min Workers: 0
+     - Max Workers: 3
+
+STEP 6: Copy your endpoint credentials
+  After deployment, RunPod will give you:
+  - Endpoint ID (e.g., abc123def)
+  - API Key (e.g., rpa_XXX...)
+
+STEP 7: Update VIDS Pro configuration
+  $ ssh root@135.181.99.172
+  $ nano /opt/vids_pro/.env
+  
+  Uncomment and update these lines:
+  RUNPOD_ECHOMIMIC_KEY=rpa_YOUR_KEY_HERE
+  RUNPOD_ECHOMIMIC_RUN=https://api.runpod.ai/v2/YOUR_ENDPOINT_ID/run
+  RUNPOD_ECHOMIMIC_STATUS=https://api.runpod.ai/v2/YOUR_ENDPOINT_ID/status
+
+STEP 8: Restart VIDS Pro backend
+  $ systemctl restart vids-pro-backend
+
+═══════════════════════════════════════════════════════════════════════
+  ALTERNATIVE: NO DOCKER ON YOUR MACHINE?
+═══════════════════════════════════════════════════════════════════════
+
+Upload deployment files to GitHub, then use RunPod Hub:
+
+1. Create new GitHub repo
+2. Upload all files from /opt/echomimic_v2_deploy/
+3. Go to https://www.runpod.io/console/hub
+4. Submit your repo
+5. RunPod will build & deploy automatically
+
+═══════════════════════════════════════════════════════════════════════
+  IMPORTANT NOTES
+═══════════════════════════════════════════════════════════════════════
+
+⚠️  BEFORE DEPLOYING:
+   - You need a Docker Hub account (free at hub.docker.com)
+   - You need a RunPod account with credits
+   - EchoMimic V2 needs ~30GB VRAM (NVIDIA A40 minimum)
+
+💰 ESTIMATED COSTS:
+   - Build: Free (on your machine) or ~/bin/zsh.50 (RunPod build)
+   - Per video generation: ~/bin/zsh.10-0.20
+   - Storage: Free (using RunPod temporary storage)
+
+⏱️  TIMING:
+   - Docker build: 10-15 minutes
+   - First inference (cold start): 60-90 seconds
+   - Subsequent runs (warm): 30-45 seconds
+
+═══════════════════════════════════════════════════════════════════════
+
+Need help? Read DEPLOYMENT_GUIDE.md for detailed instructions.
